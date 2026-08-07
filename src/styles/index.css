@@ -1,0 +1,22 @@
+@import "tailwindcss";
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #0f1115;
+  color: #f1f5f9;
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  height: 100%;
+}
+
+#root {
+  height: 100%;
+}
+
+/* Monaco AST node highlight */
+.ast-node-highlight {
+  background-color: rgba(99, 102, 241, 0.35) !important;
+  border-bottom: 2px solid #6366f1 !important;
+  border-radius: 2px;
+}

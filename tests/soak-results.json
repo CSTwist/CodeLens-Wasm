@@ -1,0 +1,181 @@
+{
+  "runs": [
+    {
+      "i": 0,
+      "parseMs": 244,
+      "workerJsonParseMs": 56.52,
+      "mainThreadReceiveMs": 12.34,
+      "heapUsedMB": 86.18
+    },
+    {
+      "i": 1,
+      "parseMs": 191,
+      "workerJsonParseMs": 43.58,
+      "mainThreadReceiveMs": 12.84,
+      "heapUsedMB": 90.65
+    },
+    {
+      "i": 2,
+      "parseMs": 228,
+      "workerJsonParseMs": 41.68,
+      "mainThreadReceiveMs": 12.52,
+      "heapUsedMB": 95.15
+    },
+    {
+      "i": 3,
+      "parseMs": 198,
+      "workerJsonParseMs": 34.96,
+      "mainThreadReceiveMs": 14.08,
+      "heapUsedMB": 99.61
+    },
+    {
+      "i": 4,
+      "parseMs": 211,
+      "workerJsonParseMs": 37.75,
+      "mainThreadReceiveMs": 20.53,
+      "heapUsedMB": 13.27
+    },
+    {
+      "i": 5,
+      "parseMs": 187,
+      "workerJsonParseMs": 31.02,
+      "mainThreadReceiveMs": 12.83,
+      "heapUsedMB": 17.79
+    },
+    {
+      "i": 6,
+      "parseMs": 185,
+      "workerJsonParseMs": 31.69,
+      "mainThreadReceiveMs": 13.9,
+      "heapUsedMB": 22.24
+    },
+    {
+      "i": 7,
+      "parseMs": 186,
+      "workerJsonParseMs": 37.51,
+      "mainThreadReceiveMs": 14.28,
+      "heapUsedMB": 26.75
+    },
+    {
+      "i": 8,
+      "parseMs": 185,
+      "workerJsonParseMs": 29.43,
+      "mainThreadReceiveMs": 11.28,
+      "heapUsedMB": 31.21
+    },
+    {
+      "i": 9,
+      "parseMs": 182,
+      "workerJsonParseMs": 28.24,
+      "mainThreadReceiveMs": 13.25,
+      "heapUsedMB": 17.59
+    },
+    {
+      "i": 10,
+      "parseMs": 184,
+      "workerJsonParseMs": 30.7,
+      "mainThreadReceiveMs": 12.07,
+      "heapUsedMB": 22.05
+    },
+    {
+      "i": 11,
+      "parseMs": 187,
+      "workerJsonParseMs": 32.81,
+      "mainThreadReceiveMs": 10.84,
+      "heapUsedMB": 26.55
+    },
+    {
+      "i": 12,
+      "parseMs": 192,
+      "workerJsonParseMs": 30.22,
+      "mainThreadReceiveMs": 11.58,
+      "heapUsedMB": 31.01
+    },
+    {
+      "i": 13,
+      "parseMs": 183,
+      "workerJsonParseMs": 30.2,
+      "mainThreadReceiveMs": 13.4,
+      "heapUsedMB": 18.31
+    },
+    {
+      "i": 14,
+      "parseMs": 185,
+      "workerJsonParseMs": 31.9,
+      "mainThreadReceiveMs": 12.86,
+      "heapUsedMB": 22.77
+    },
+    {
+      "i": 15,
+      "parseMs": 184,
+      "workerJsonParseMs": 28.42,
+      "mainThreadReceiveMs": 11.15,
+      "heapUsedMB": 27.28
+    },
+    {
+      "i": 16,
+      "parseMs": 185,
+      "workerJsonParseMs": 29.63,
+      "mainThreadReceiveMs": 12.15,
+      "heapUsedMB": 31.74
+    },
+    {
+      "i": 17,
+      "parseMs": 195,
+      "workerJsonParseMs": 30.38,
+      "mainThreadReceiveMs": 13.89,
+      "heapUsedMB": 18.95
+    },
+    {
+      "i": 18,
+      "parseMs": 181,
+      "workerJsonParseMs": 30.49,
+      "mainThreadReceiveMs": 11.4,
+      "heapUsedMB": 23.47
+    },
+    {
+      "i": 19,
+      "parseMs": 183,
+      "workerJsonParseMs": 32.54,
+      "mainThreadReceiveMs": 12.01,
+      "heapUsedMB": 27.93
+    }
+  ],
+  "maxMainThreadReceiveMs": 20.53,
+  "avgParseMs": 192.8,
+  "finalHeapUsedMB": 27.93,
+  "oneMbRuns": [
+    {
+      "i": 0,
+      "parseMs": 186,
+      "mainThreadReceiveMs": 241.4,
+      "nodeCount": 76825
+    },
+    {
+      "i": 1,
+      "parseMs": 188,
+      "mainThreadReceiveMs": 249.22,
+      "nodeCount": 76825
+    },
+    {
+      "i": 2,
+      "parseMs": 178,
+      "mainThreadReceiveMs": 243.6,
+      "nodeCount": 76825
+    },
+    {
+      "i": 3,
+      "parseMs": 186,
+      "mainThreadReceiveMs": 237.75,
+      "nodeCount": 76825
+    },
+    {
+      "i": 4,
+      "parseMs": 185,
+      "mainThreadReceiveMs": 239.55,
+      "nodeCount": 76825
+    }
+  ],
+  "maxOneMbParseMs": 188,
+  "maxOneMbReceiveMs": 249.22
+}

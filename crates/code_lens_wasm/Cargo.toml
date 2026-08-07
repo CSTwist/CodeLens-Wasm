@@ -1,0 +1,55 @@
+[package]
+name = "code_lens_wasm"
+version = "0.1.0"
+edition = "2024"
+
+[lib]
+crate-type = ["cdylib", "rlib"]
+
+# opt-level must stay 1: at -O2/-O3 the wasm32-unknown-unknown build corrupts
+# memory inside tree-sitter's C parser (traps in ts_parser_parse ->
+# stack_node_release -> ts_subtree_release at ~11k nodes / 1MB of statements;
+# 'memory access out of bounds' / 'unreachable'). Verified empirically:
+# opt 0/1 pass, opt 2/3 crash; debug (-O0) passes; native release (-O3) passes.
+# Cost: negligible for a parser; keeps release artifact correct.
+# NOTE: root cause was later identified as the tree-sitter-language wasm stdlib
+# heap never being initialized (see [patch.crates-io] below); opt-level 1 kept
+# as a deliberate perf/correctness margin until the fix is fully validated.
+[profile.release]
+opt-level = 1
+
+# C sources (parsers/scanners) compile via cc-rs: -O0 in debug, -O2 in release.
+# Kept at -O0 so C assertions stay live during remaining validation; re-test
+# -O2 after the stdlib patch lands.
+[profile.release.package.tree-sitter]
+opt-level = 0
+
+[profile.release.package.tree-sitter-typescript]
+opt-level = 0
+
+[profile.release.package.tree-sitter-rust]
+opt-level = 0
+
+[profile.release.package.tree-sitter-json]
+opt-level = 0
+
+[dependencies]
+tree-sitter = "=0.26.11"
+tree-sitter-typescript = "=0.23.2"
+tree-sitter-rust = "=0.24.2"
+tree-sitter-json = "=0.24.8"
+tree-sitter-language = "=0.1.7"
+wasm-bindgen = "=0.2.126"
+js-sys = "0.3"
+serde = "=1.0.229"
+serde_json = "=1.0.151"
+
+[dev-dependencies]
+wasm-bindgen-test = "=0.3.76"
+
+# CodeLens patch: tree-sitter-language's wasm stdlib.c heap was never
+# initialized on wasm32-unknown-unknown (reset_heap only runs under wasmtime),
+# starting the C bump heap at address ~8 and corrupting memory at ~11k nodes.
+# Vendored copy auto-inits the heap at 512MB and raises the 4MB cap to 1GB.
+[patch.crates-io]
+tree-sitter-language = { path = "vendor/tree-sitter-language" }

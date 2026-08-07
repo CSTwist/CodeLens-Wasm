@@ -1,0 +1,93 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  rust:
+    name: Rust (fmt, clippy, test, wasm, size gate)
+    runs-on: ubuntu-latest
+    env:
+      # wasm32-unknown-unknown C cross-compile needs clang + a WASI sysroot
+      # (stdlib.h). ubuntu-latest has clang; the sysroot is installed below.
+      CFLAGS_wasm32-unknown-unknown: "-isystem /opt/wasi-sdk/wasi-sdk-33.0-linux/share/wasi-sysroot/include/wasm32-wasi"
+    steps:
+      - uses: actions/checkout@v4 # pinned (DCodeBook retro lesson)
+      - uses: dtolnay/rust-toolchain@v1 # pinned
+        with:
+          toolchain: 1.97.1
+          targets: wasm32-unknown-unknown
+          cache: true
+      - name: Install wasi-sdk (C sysroot for wasm32 cross-compile)
+        run: |
+          curl -sSL https://github.com/WebAssembly/wasi-sdk/releases/download/wasi-sdk-33/wasi-sdk-33.0-linux.tar.gz -o /tmp/wasi.tar.gz
+          mkdir -p /opt/wasi-sdk
+          tar -xzf /tmp/wasi.tar.gz -C /opt/wasi-sdk
+      - name: Install wasm-pack (pinned via --locked)
+        run: cargo install wasm-pack --locked
+      - name: Format check
+        working-directory: crates/code_lens_wasm
+        run: cargo fmt --check
+      - name: Clippy
+        working-directory: crates/code_lens_wasm
+        run: cargo clippy -- -D warnings
+      - name: Unit tests
+        working-directory: crates/code_lens_wasm
+        run: cargo test
+      - name: Build wasm (no --optimize; wasm-opt -O runs by default in 0.15)
+        working-directory: crates/code_lens_wasm
+        run: wasm-pack build --target web --release --out-dir ../../public/wasm --out-name code_lens_wasm
+      - name: Wasm size gate (<=800 kB gzip)
+        run: node scripts/check-wasm-size.mjs
+      - uses: actions/upload-artifact@v4 # pinned
+        with:
+          name: wasm-artifact
+          path: public/wasm
+
+  web:
+    name: Web (typecheck, lint, test, build, e2e, budgets)
+    runs-on: ubuntu-latest
+    needs: rust
+    steps:
+      - uses: actions/checkout@v4 # pinned
+      - uses: pnpm/action-setup@v4 # pinned
+        with:
+          version: 11.18.0
+      - uses: actions/setup-node@v4 # pinned
+        with:
+          node-version: 22
+          cache: pnpm
+      # public/wasm is gitignored (wasm-pack artifact) — take it from the rust job.
+      - uses: actions/download-artifact@v4 # pinned
+        with:
+          name: wasm-artifact
+          path: public/wasm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm typecheck
+      - run: pnpm lint
+      - run: pnpm test
+      - run: pnpm build
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+      - name: Playwright e2e (vs production preview + real wasm worker)
+        run: npx playwright test
+      - name: Bundle budget (monaco chunk <=4 MB raw)
+        run: node scripts/check-bundle-size.mjs
+
+  deploy:
+    name: Deploy (Vercel)
+    runs-on: ubuntu-latest
+    needs: web
+    # Skipped until VERCEL_TOKEN / VERCEL_ORG_ID / VERCEL_PROJECT_ID are set.
+    if: ${{ secrets.VERCEL_TOKEN != '' }}
+    steps:
+      - uses: actions/checkout@v4 # pinned
+      - uses: amondnet/vercel-action@v1.12.0 # pinned
+        with:
+          vercel-token: ${{ secrets.VERCEL_TOKEN }}
+          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
+          vercel-project-id: ${{ secrets.VERCEL_PROJECT_ID }}
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          # Preview on PRs; production on main (branch detection default).
